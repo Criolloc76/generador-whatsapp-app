@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Aperturas WhatsApp</title>
+    <!-- Carga de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'wa-green': '#25D366',
+                        'wa-dark': '#075E54',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .step-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .input-group input:focus { border-color: #25D366; ring: 2px; ring-color: #25D366; }
+        textarea.is-valid, input[type="text"].is-valid {
+            border-color: #25D366 !important;
+        }
+        .step-dot.active-dot {
+            background-color: #25D366 !important;
+            color: white !important;
+            border-color: white !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4" onload="showStep(1); loadState();">
+
+    <!-- Contenedor Principal -->
+    <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden">
+        
+        <!-- Header / Barra de Progreso -->
+        <div class="bg-wa-dark p-6 text-white">
+            <h1 class="text-2xl font-bold text-center mb-4">Generador de Aperturas WhatsApp</h1>
+            
+            <!-- Indicadores de pasos -->
+            <div class="flex justify-between items-center relative px-4">
+                <div class="absolute top-1/2 left-0 w-full h-1 bg-white/30 -z-0 rounded"></div>
+                <div class="absolute top-1/2 left-0 h-1 bg-wa-green -z-0 rounded transition-all duration-500" id="progressBar" style="width: 0%"></div>
+                
+                <!-- Bolitas de pasos -->
+                <div class="step-dot w-8 h-8 rounded-full bg-wa-green active-dot flex items-center justify-center font-bold border-2 border-white z-10 shadow">1</div>
+                <div class="step-dot w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold border-2 border-white z-10 transition-colors">2</div>
+                <div class="step-dot w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold border-2 border-white z-10 transition-colors">3</div>
+            </div>
+            <div class="flex justify-between text-xs mt-2 px-2 opacity-80">
+                <span>Nombres</span><span>Datos</span><span>Resultados</span>
+            </div>
+        </div>
+
+        <!-- Área de Contenido -->
+        <div class="p-8">
+            
+            <!-- PASO 1: CONFIGURACIÓN DE NOMBRES -->
+            <div id="step1" class="step-content active">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Paso 1: Configura la Apertura</h2>
+                <p class="text-gray-500 mb-6">Define los nombres para personalizar el saludo inicial.</p>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">Tu Nombre (Ej: Fabian)</label>
+                        <input type="text" id="userName" placeholder="Nombre de quien envía el mensaje" class="w-full p-3 border rounded-lg focus:outline-none border-gray-300" oninput="saveState(); checkValidity(this)">
+                    </div>
+                    <div>
+                        <label for="leaderName" class="block text-sm font-medium text-gray-700 mb-1">Nombre del Líder / Jefe de Equipo (Ej: Jorge Serratos)</label>
+                        <input type="text" id="leaderName" placeholder="Nombre del referente a mencionar" class="w-full p-3 border rounded-lg focus:outline-none border-gray-300" oninput="saveState(); checkValidity(this)">
+                    </div>
+                </div>
+
+                <div class="flex justify-end mt-6">
+                    <button onclick="nextStep(2)" class="bg-wa-dark text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition transform hover:scale-105">Siguiente &rarr;</button>
+                </div>
+            </div>
+
+            <!-- PASO 2: BASE DE DATOS -->
+            <div id="step2" class="step-content">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Paso 2: Base de Datos</h2>
+                <p class="text-gray-500 mb-4">Pega las celdas de tu Excel/Sheets aquí.</p>
+                
+                <div class="bg-blue-50 p-3 rounded-md mb-3 text-sm text-blue-800 border border-blue-200">
+                    <strong>Importante:</strong> El sistema buscará el <strong>Nombre en la Columna 1</strong> y el <strong>Teléfono en la Columna 4</strong> (con código de país).
+                </div>
+
+                <textarea id="sheetData" rows="8" class="w-full p-3 font-mono text-sm border rounded-lg focus:outline-none focus:border-wa-green border-gray-300 mb-2" placeholder="Cathy	cathy@mail.com	MX	573226603371 ..." oninput="checkValidity(this)"></textarea>
+                
+                <div id="errorMsg" class="hidden text-red-600 text-sm font-medium mb-4 bg-red-50 p-2 rounded"></div>
+
+                <div class="flex justify-between mt-4">
+                    <button onclick="prevStep(1)" class="text-gray-500 font-semibold px-4 py-3 hover:text-gray-700">Atrás</button>
+                    <button onclick="generateLinks()" class="bg-wa-green text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-green-600 transition transform hover:scale-105">
+                        🚀 GENERAR LINKS
+                    </button>
+                </div>
+            </div>
+
+            <!-- PASO 3: RESULTADOS -->
+            <div id="step3" class="step-content text-center">
+                <div class="mb-6">
+                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800">¡Proceso Finalizado!</h2>
+                    <p class="text-gray-600">Se han generado <span id="totalCount" class="font-bold">0</span> links personalizados.</p>
+                </div>
+
+                <div class="flex justify-center gap-4 mb-6">
+                    <button onclick="copyAllLinks(this)" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition shadow">Copiar Todos los Links</button>
+                    <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition">Nueva Campaña</button>
+                </div>
+
+                <!-- Tabla de Resultados -->
+                <div class="overflow-x-auto border rounded-lg text-left max-h-96 overflow-y-auto">
+                    <table class="min-w-full bg-white">
+                        <thead class="bg-gray-100 text-gray-600 text-xs uppercase sticky top-0">
+                            <tr>
+                                <th class="p-3">Nombre</th>
+                                <th class="p-3">Apertura Generada</th>
+                                <th class="p-3 text-right">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsBody" class="text-sm divide-y divide-gray-200">
+                            <!-- Resultados aquí -->
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-6 text-left">
+                     <button onclick="prevStep(2)" class="text-gray-500 underline text-sm">Volver a los datos</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const WA_API_BASE = 'https://wa.me/';
+        
+        // Configuración de columnas según tu requerimiento (Nombre Col 1, Teléfono Col 4)
+        const COL_NAME = 0;
+        const COL_PHONE = 3;
+
+        // 5 Variantes de saludo predefinidas
+        const FIXED_GREETINGS = [
+            'Hola',
+            'Buen día',
+            '¿Qué tal?',
+            'Te saludo',
+            'Es un gusto saludarte'
+        ];
+
+        // Función de validación visual de los inputs
+        function checkValidity(el) {
+            const val = el.value.trim();
+            if (val.length > 0) {
+                el.classList.add('is-valid');
+                el.classList.remove('border-red-500');
+            } else {
+                el.classList.remove('is-valid');
+            }
+        }
+
+        function validateStep(step) {
+            if (step === 2) { // Validación del Paso 1 (Nombres)
+                const userNameEl = document.getElementById('userName');
+                const leaderNameEl = document.getElementById('leaderName');
+                let isValid = true;
+                
+                if (userNameEl.value.trim() === '') {
+                    userNameEl.classList.add('border-red-500');
+                    userNameEl.focus();
+                    isValid = false;
+                } else {
+                     userNameEl.classList.remove('border-red-500');
+                }
+
+                if (leaderNameEl.value.trim() === '') {
+                    leaderNameEl.classList.add('border-red-500');
+                    if(isValid) leaderNameEl.focus(); // Solo enfocar si el primer campo ya estaba bien
+                    isValid = false;
+                } else {
+                    leaderNameEl.classList.remove('border-red-500');
+                }
+                
+                if (!isValid) alert('Completa Tu Nombre y el Nombre del Líder para continuar.');
+                return isValid;
+            }
+            return true;
+        }
+
+        function nextStep(step) {
+            if (step > currentStep && !validateStep(step)) return;
+
+            showStep(step);
+        }
+
+        function prevStep(step) {
+            showStep(step);
+        }
+
+        function showStep(step) {
+            // Ocultar todos
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            // Mostrar actual
+            document.getElementById('step' + step).classList.add('active');
+            
+            // Actualizar barra y bolitas
+            currentStep = step;
+            updateProgressBar(step);
+        }
+
+        function updateProgressBar(step) {
+            // Flujo de 3 pasos: 1 -> 2 -> 3 (0%, 50%, 100%)
+            const percentage = ((step - 1) / 2) * 100;
+            document.getElementById('progressBar').style.width = percentage + '%';
+            
+            const dots = document.querySelectorAll('.step-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.remove('active-dot'); // Remover de todos
+                if (index + 1 <= step) {
+                    dot.classList.add('active-dot');
+                }
+            });
+        }
+
+        function generateLinks() {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.classList.add('hidden');
+
+            try {
+                const rawData = document.getElementById('sheetData').value;
+                const userName = document.getElementById('userName').value.trim();
+                const leaderName = document.getElementById('leaderName').value.trim();
+
+                if (!rawData.trim()) throw new Error("Pega los datos de tu tabla.");
+                
+                // Procesar datos
+                const lines = rawData.trim().split('\n');
+                const resultsBody = document.getElementById('resultsBody');
+                resultsBody.innerHTML = '';
+                
+                let validCount = 0;
+
+                lines.forEach((line) => {
+                    const cols = line.split('\t');
+                    
+                    // Validar que tenga suficientes columnas y que el teléfono parezca un número
+                    if (cols.length > COL_PHONE) {
+                        const contactName = cols[COL_NAME].trim();
+                        let phone = cols[COL_PHONE].replace(/\D/g, ''); // Solo números
+
+                        // Saltar encabezados o filas vacías/inválidas
+                        if (contactName && phone.length >= 8) { // Mínimo 8 dígitos para ser un teléfono
+                            
+                            // Rotación de saludos: usamos el índice del conteo válido
+                            const greeting = FIXED_GREETINGS[validCount % FIXED_GREETINGS.length];
+                            
+                            // *** CONSTRUCCIÓN DEL MENSAJE PERSONALIZADO ***
+                            // Ejemplo: Hola [Cathy], te saluda *[Fabian]* del equipo de *[Jorge Serratos]*
+                            const fullText = `${greeting} ${contactName}, te saluda *${userName}* del equipo de *${leaderName}*`;
+                            
+                            // El encodeURIComponent transforma \n en %0A, y espacios en %20.
+                            const encodedMessage = encodeURIComponent(fullText);
+                            
+                            // Link final
+                            const link = `${WA_API_BASE}${phone}?text=${encodedMessage}`;
+
+                            // Renderizar fila
+                            const tr = document.createElement('tr');
+                            tr.className = "hover:bg-gray-50";
+                            tr.innerHTML = `
+                                <td class="p-3 font-medium text-gray-800">${contactName}</td>
+                                <td class="p-3 text-gray-500 max-w-xs text-xs font-mono">${greeting} ${contactName}, ...</td>
+                                <td class="p-3 text-right">
+                                    <a href="${link}" target="_blank" class="text-wa-green hover:underline font-bold text-sm mr-2">Abrir</a>
+                                    <button onclick="copyOneLink('${link}')" class="text-blue-500 hover:underline text-sm">Copiar</button>
+                                </td>
+                            `;
+                            resultsBody.appendChild(tr);
+                            validCount++;
+                        }
+                    }
+                });
+
+                if (validCount === 0) throw new Error("No se encontraron filas válidas. Verifica que copiaste columnas separadas por tabulación y que el Nombre (Col 1) y Teléfono (Col 4) están completos.");
+
+                document.getElementById('totalCount').innerText = validCount;
+                nextStep(3);
+
+            } catch (e) {
+                console.error("Error de Generación:", e);
+                errorMsg.innerText = e.message;
+                errorMsg.classList.remove('hidden');
+            }
+        }
+
+        // Funciones de Copiado
+        function copyOneLink(link) {
+            navigator.clipboard.writeText(link).then(() => {
+                // Usamos un modal o un toast en lugar de alert()
+                showToast('Link copiado al portapapeles.', 'success');
+            }).catch(() => {
+                showToast('Error al copiar el link.', 'error');
+            });
+        }
+
+        function copyAllLinks(button) {
+            const rows = document.querySelectorAll('#resultsBody tr');
+            if (rows.length === 0) return;
+            
+            let allLinks = "";
+            rows.forEach(row => {
+                // El link está en el atributo 'href' del botón 'Abrir'
+                const link = row.querySelector('a').href;
+                allLinks += link + "\n";
+            });
+
+            navigator.clipboard.writeText(allLinks).then(() => {
+                button.textContent = '¡Copiados!';
+                showToast('Todos los links han sido copiados.', 'success');
+                setTimeout(() => {
+                    button.textContent = 'Copiar Todos los Links';
+                }, 2000);
+            }).catch(() => {
+                showToast('Error al copiar todos los links.', 'error');
+            });
+        }
+        
+        // Simulación de Toast/Modal (ya que alert() está prohibido)
+        function showToast(message, type) {
+            const toastId = 'app-toast';
+            let toastEl = document.getElementById(toastId);
+            
+            if (!toastEl) {
+                toastEl = document.createElement('div');
+                toastEl.id = toastId;
+                toastEl.className = 'fixed bottom-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-0 z-50';
+                document.body.appendChild(toastEl);
+            }
+
+            toastEl.className = toastEl.className.replace(/bg-(red|green)-\d+/, ''); // Limpiar colores anteriores
+            toastEl.classList.add(type === 'success' ? 'bg-green-600' : 'bg-red-600');
+            toastEl.innerHTML = `<p class="font-semibold">${message}</p>`;
+            
+            // Mostrar y ocultar
+            setTimeout(() => { toastEl.classList.remove('opacity-0'); }, 10);
+            setTimeout(() => { toastEl.classList.add('opacity-0'); }, 3000);
+        }
+
+        // --- Persistencia Local (LocalStorage) ---
+        const STORAGE_KEY = 'wa_campaign_names_v3';
+
+        function saveState() {
+            const state = {
+                userName: document.getElementById('userName').value,
+                leaderName: document.getElementById('leaderName').value
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        // Carga el estado al iniciar
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                const state = JSON.parse(saved);
+                
+                const userNameEl = document.getElementById('userName');
+                const leaderNameEl = document.getElementById('leaderName');
+                
+                if(state.userName) userNameEl.value = state.userName;
+                if(state.leaderName) leaderNameEl.value = state.leaderName;
+                
+                checkValidity(userNameEl);
+                checkValidity(leaderNameEl);
+            }
+        }
+    </script>
+</body>
+</html>
