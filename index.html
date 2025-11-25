@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Aperturas WhatsApp</title>
+    <!-- Título actualizado para reflejar la sinergia -->
+    <title>Sinergia | Generador de Aperturas 1+1=3</title> 
     <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,8 +12,10 @@
             theme: {
                 extend: {
                     colors: {
-                        'wa-green': '#25D366',
-                        'wa-dark': '#075E54',
+                        // Paleta de colores ajustada a la temática 1+1=3 (Negro/Rojo)
+                        'result-red': '#E30613', // Rojo fuerte para resultados (el '3' de la imagen)
+                        'synergy-dark': '#1A1A1A', // Casi negro para fondo (el fondo de la imagen)
+                        'wa-light': '#34B7F1',
                     },
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
@@ -21,87 +24,102 @@
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .step-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .step-content { 
+            display: none; 
+            animation: fadeIn 0.4s ease-in-out; 
+            padding-bottom: 2rem;
+        }
         .step-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .input-group input:focus { border-color: #25D366; ring: 2px; ring-color: #25D366; }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        .input-group input:focus { 
+            border-color: #E30613; 
+            box-shadow: 0 0 0 2px rgba(227, 6, 19, 0.5);
+        }
         textarea.is-valid, input[type="text"].is-valid {
-            border-color: #25D366 !important;
+            border-color: #E30613 !important;
         }
         .step-dot.active-dot {
-            background-color: #25D366 !important;
+            background-color: #E30613 !important; /* Nuevo color activo */
             color: white !important;
             border-color: white !important;
+            transform: scale(1.1);
         }
+        .step-dot { transition: all 0.3s ease; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center py-10 px-4" onload="showStep(1); loadState();">
 
     <!-- Contenedor Principal -->
-    <div class="w-full max-w-3xl bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden">
         
-        <!-- Header / Barra de Progreso -->
-        <div class="bg-wa-dark p-6 text-white">
-            <h1 class="text-2xl font-bold text-center mb-4">Generador de Aperturas WhatsApp</h1>
+        <!-- Header / Barra de Progreso (Fondo Oscuro) -->
+        <div class="bg-synergy-dark p-6 text-white border-b-4 border-result-red">
+            <!-- Título ajustado -->
+            <h1 class="text-2xl font-extrabold text-center mb-4 tracking-wider">SINERGIA | Generador de Aperturas 1+1=3</h1>
             
             <!-- Indicadores de pasos -->
             <div class="flex justify-between items-center relative px-4">
                 <div class="absolute top-1/2 left-0 w-full h-1 bg-white/30 -z-0 rounded"></div>
-                <div class="absolute top-1/2 left-0 h-1 bg-wa-green -z-0 rounded transition-all duration-500" id="progressBar" style="width: 0%"></div>
+                <div class="absolute top-1/2 left-0 h-1 bg-result-red -z-0 rounded transition-all duration-500" id="progressBar" style="width: 0%"></div>
                 
-                <!-- Bolitas de pasos -->
-                <div class="step-dot w-8 h-8 rounded-full bg-wa-green active-dot flex items-center justify-center font-bold border-2 border-white z-10 shadow">1</div>
-                <div class="step-dot w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold border-2 border-white z-10 transition-colors">2</div>
-                <div class="step-dot w-8 h-8 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold border-2 border-white z-10 transition-colors">3</div>
+                <!-- Bolitas de pasos (Usando result-red) -->
+                <div class="step-dot w-9 h-9 rounded-full bg-result-red active-dot flex items-center justify-center font-bold border-2 border-white z-10 shadow-md">1</div>
+                <div class="step-dot w-9 h-9 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold border-2 border-white z-10 transition-colors">2</div>
+                <div class="step-dot w-9 h-9 rounded-full bg-gray-300 text-gray-600 flex items-center justify-center font-bold border-2 border-white z-10 transition-colors">3</div>
             </div>
-            <div class="flex justify-between text-xs mt-2 px-2 opacity-80">
-                <span>Nombres</span><span>Datos</span><span>Resultados</span>
+            <div class="flex justify-between text-sm mt-2 px-2 opacity-80">
+                <span>1. Configuración</span><span>2. Base de Datos</span><span>3. Resultados</span>
             </div>
         </div>
 
         <!-- Área de Contenido -->
-        <div class="p-8">
+        <div class="p-6 sm:p-8">
             
             <!-- PASO 1: CONFIGURACIÓN DE NOMBRES -->
             <div id="step1" class="step-content active">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Paso 1: Configura la Apertura</h2>
-                <p class="text-gray-500 mb-6">Define los nombres para personalizar el saludo inicial.</p>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Paso 1: Define los Remitentes</h2>
+                <p class="text-gray-600 mb-6">Esta información se usará para el saludo rotativo.</p>
                 
-                <div class="space-y-4">
-                    <div>
+                <div class="space-y-5">
+                    <div class="bg-red-50/20 p-4 rounded-xl border border-result-red/30">
                         <label for="userName" class="block text-sm font-medium text-gray-700 mb-1">Tu Nombre (Ej: Fabian)</label>
-                        <input type="text" id="userName" placeholder="Nombre de quien envía el mensaje" class="w-full p-3 border rounded-lg focus:outline-none border-gray-300" oninput="saveState(); checkValidity(this)">
+                        <input type="text" id="userName" placeholder="Nombre de quien envía el mensaje" class="w-full p-3 border rounded-lg focus:outline-none border-gray-300 transition" oninput="saveState(); checkValidity(this)">
                     </div>
-                    <div>
+                    <div class="bg-gray-100 p-4 rounded-xl border border-gray-300">
                         <label for="leaderName" class="block text-sm font-medium text-gray-700 mb-1">Nombre del Líder / Jefe de Equipo (Ej: Jorge Serratos)</label>
-                        <input type="text" id="leaderName" placeholder="Nombre del referente a mencionar" class="w-full p-3 border rounded-lg focus:outline-none border-gray-300" oninput="saveState(); checkValidity(this)">
+                        <input type="text" id="leaderName" placeholder="Nombre del referente a mencionar" class="w-full p-3 border rounded-lg focus:outline-none border-gray-300 transition" oninput="saveState(); checkValidity(this)">
                     </div>
                 </div>
 
-                <div class="flex justify-end mt-6">
-                    <button onclick="nextStep(2)" class="bg-wa-dark text-white px-6 py-3 rounded-lg font-bold hover:bg-opacity-90 transition transform hover:scale-105">Siguiente &rarr;</button>
+                <div class="flex justify-end mt-8">
+                    <button onclick="nextStep(2)" class="bg-synergy-dark text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-opacity-80 transition transform hover:scale-105">Siguiente &rarr;</button>
                 </div>
             </div>
 
             <!-- PASO 2: BASE DE DATOS -->
             <div id="step2" class="step-content">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Paso 2: Base de Datos</h2>
-                <p class="text-gray-500 mb-4">Pega las celdas de tu Excel/Sheets aquí.</p>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Paso 2: Pega tu Base de Datos</h2>
+                <p class="text-gray-600 mb-4">Copia las celdas de tu hoja de cálculo y pégalas en el área de abajo.</p>
                 
-                <div class="bg-blue-50 p-3 rounded-md mb-3 text-sm text-blue-800 border border-blue-200">
-                    <strong>Importante:</strong> El sistema buscará el <strong>Primer Nombre (Columna 1)</strong> y el <strong>Teléfono (Columna 4)</strong>.
+                <div class="bg-red-50 p-4 rounded-xl mb-4 text-sm text-result-red border border-red-300 font-medium">
+                    <strong class="flex items-center"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Formato Requerido:</strong> El sistema usará el <strong>Primer Nombre (Columna 1)</strong> y el <strong>Teléfono (Columna 4)</strong>.
                 </div>
 
-                <textarea id="sheetData" rows="8" class="w-full p-3 font-mono text-sm border rounded-lg focus:outline-none focus:border-wa-green border-gray-300 mb-2" placeholder="Cathy	cathy@mail.com	MX	573226603371 ..." oninput="checkValidity(this)"></textarea>
+                <textarea id="sheetData" rows="10" class="w-full p-4 font-mono text-sm border rounded-xl focus:outline-none focus:border-result-red border-gray-300 transition" placeholder="Cathy	cathy@mail.com	MX	573226603371	..." oninput="checkValidity(this)"></textarea>
                 
-                <div id="errorMsg" class="hidden text-red-600 text-sm font-medium mb-4 bg-red-50 p-2 rounded"></div>
+                <div id="errorMsg" class="hidden text-result-red text-sm font-medium mb-4 mt-2 bg-red-50 p-3 rounded-xl border border-red-300"></div>
 
-                <div class="flex justify-between mt-4">
-                    <button onclick="prevStep(1)" class="text-gray-500 font-semibold px-4 py-3 hover:text-gray-700">Atrás</button>
-                    <button onclick="generateLinks()" class="bg-wa-green text-white px-8 py-3 rounded-lg font-bold shadow-lg hover:bg-green-600 transition transform hover:scale-105">
+                <div class="flex justify-between mt-6">
+                    <button onclick="prevStep(1)" class="text-gray-600 font-medium px-4 py-2 hover:text-synergy-dark transition flex items-center">
+                        &larr; Atrás
+                    </button>
+                    <button onclick="generateLinks()" class="bg-result-red text-white px-8 py-3 rounded-full font-bold shadow-lg shadow-result-red/50 hover:bg-red-700 transition transform hover:scale-105 flex items-center">
                         🚀 GENERAR LINKS
                     </button>
                 </div>
@@ -109,26 +127,31 @@
 
             <!-- PASO 3: RESULTADOS -->
             <div id="step3" class="step-content text-center">
-                <div class="mb-6">
-                    <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div class="mb-6 bg-result-red/10 p-6 rounded-xl border border-result-red/30">
+                    <div class="w-16 h-16 bg-result-red text-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-xl">
                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                     </div>
-                    <h2 class="text-2xl font-bold text-gray-800">¡Proceso Finalizado!</h2>
-                    <p class="text-gray-600">Se han generado <span id="totalCount" class="font-bold">0</span> links personalizados.</p>
+                    <h2 class="text-2xl font-bold text-gray-800">¡Links Generados con Éxito!</h2>
+                    <p class="text-gray-600">Total de aperturas listas: <span id="totalCount" class="font-extrabold text-lg text-result-red">0</span>.</p>
                 </div>
 
-                <div class="flex justify-center gap-4 mb-6">
-                    <button onclick="copyAllLinks(this)" class="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 transition shadow">Copiar Todos los Links</button>
-                    <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg font-medium hover:bg-gray-300 transition">Nueva Campaña</button>
+                <div class="flex justify-center flex-wrap gap-3 mb-6">
+                    <button onclick="copyAllLinks(this)" class="bg-synergy-dark text-white px-6 py-2 rounded-full font-medium hover:bg-opacity-90 transition shadow-md flex items-center">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m-2 4h-2M15 9h2m-2 4h2m-2 4h2"></path></svg>
+                        Copiar Todos los Links
+                    </button>
+                    <button onclick="location.reload()" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-full font-medium hover:bg-gray-300 transition shadow-md">
+                        Nueva Campaña
+                    </button>
                 </div>
 
                 <!-- Tabla de Resultados -->
-                <div class="overflow-x-auto border rounded-lg text-left max-h-96 overflow-y-auto">
+                <div class="overflow-x-auto border rounded-xl shadow-inner text-left max-h-[400px] overflow-y-auto">
                     <table class="min-w-full bg-white">
-                        <thead class="bg-gray-100 text-gray-600 text-xs uppercase sticky top-0">
+                        <thead class="bg-gray-100 text-gray-600 text-xs uppercase sticky top-0 shadow-sm border-b">
                             <tr>
-                                <th class="p-3">Nombre</th>
-                                <th class="p-3">Apertura Generada</th>
+                                <th class="p-3">Nombre Completo</th>
+                                <th class="p-3">Apertura (Rotativa)</th>
                                 <th class="p-3 text-right">Acción</th>
                             </tr>
                         </thead>
@@ -139,28 +162,40 @@
                 </div>
                 
                 <div class="mt-6 text-left">
-                     <button onclick="prevStep(2)" class="text-gray-500 underline text-sm">Volver a los datos</button>
+                     <button onclick="prevStep(2)" class="text-gray-500 underline text-sm hover:text-synergy-dark transition">Volver a los datos</button>
                 </div>
             </div>
 
         </div>
     </div>
 
+    <!-- Pie de Página (Colaboración) -->
+    <footer class="mt-8 text-center text-sm text-gray-500">
+        <p>Una herramienta diseñada con la colaboración de <span class="font-semibold text-synergy-dark">Fabián</span>.</p>
+        
+        <!-- Botón de Contacto -->
+        <a href="https://wa.me/573153392403?text=Hola%20Fabian%2C%20te%20escribo%20desde%20la%20app%20%221%2B1%3D3%20Generador%20de%20Aperturas%22.%20Necesito%20ayuda%2Ftengo%20una%20pregunta." target="_blank" class="inline-flex items-center mt-3 px-4 py-2 bg-result-red text-white font-medium rounded-full hover:bg-red-700 transition transform hover:scale-105 text-xs shadow-md">
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24"><path d="M12.001 0C5.373 0 0 5.373 0 12c0 3.535 1.442 6.776 3.79 9.068l-1.071 3.522 3.665-1.018c2.193 1.2 4.673 1.838 7.617 1.488 6.626 0 12.001-5.373 12.001-12S18.627 0 12.001 0zM17.47 15.39c-.198.371-.852.373-1.223.193-.371-.18-.888-.31-1.385-.31-.497 0-.994.13-1.365.31-.371.18-.544.18-1.041-.001-.497-.18-1.55-.551-2.923-1.884-1.157-1.12-1.761-2.484-1.88-2.955-.18-.371.047-.551.193-.67s.371-.248.551-.43l.89-.89c.18-.18.248-.371.248-.67 0-.3-.047-.551-.13-.765-.083-.213-.193-.454-.373-.634-.18-.18-.371-.248-.551-.378-.18-.13-.371-.198-.551-.248-.18-.047-.371-.047-.551 0-.18.047-.371.13-.551.31-.18.18-.371.43-.551.67-.18.248-.371.551-.454.79-.083.248-.13.52-.13.79 0 .27.047.52.13.765.083.248.371.79.79 1.365.419.574.888 1.071 1.442 1.625 1.57 1.57 2.923 2.067 3.394 2.197.471.13.994.047 1.442-.13.448-.18.89-1.071 1.157-1.442z"/></svg>
+            Contactar a Fabián
+        </a>
+    </footer>
+
     <script>
         let currentStep = 1;
         const WA_API_BASE = 'https://wa.me/';
+        const FABIAN_WHATSAPP = '573153392403'; // Número de Fabián
         
         // Configuración de columnas según tu requerimiento (Nombre Col 1, Teléfono Col 4)
         const COL_NAME = 0;
         const COL_PHONE = 3;
 
-        // 5 Variantes de saludo predefinidas
+        // 5 Variantes de saludo personalizadas
         const FIXED_GREETINGS = [
             'Hola',
-            'Buen día',
-            '¿Qué tal?',
-            'Te saludo',
-            'Es un gusto saludarte'
+            'Saludos',
+            'Te escribo para saludarte',
+            'Es un gusto saludarte',
+            'Buen día'
         ];
 
         // Función de validación visual de los inputs
@@ -196,7 +231,7 @@
                     leaderNameEl.classList.remove('border-red-500');
                 }
                 
-                if (!isValid) alert('Completa Tu Nombre y el Nombre del Líder para continuar.');
+                if (!isValid) showToast('Completa Tu Nombre y el Nombre del Líder para continuar.', 'error');
                 return isValid;
             }
             return true;
@@ -261,7 +296,8 @@
                     // Validar que tenga suficientes columnas y que el teléfono parezca un número
                     if (cols.length > COL_PHONE) {
                         const rawName = cols[COL_NAME].trim(); // Nombre completo de la columna
-                        let contactName = rawName.split(' ')[0]; // <--- SOLO TOMA EL PRIMER NOMBRE
+                        // Lógica de solo tomar el primer nombre (para nombres compuestos/apellidos)
+                        let contactName = rawName.split(' ')[0]; 
                         let phone = cols[COL_PHONE].replace(/\D/g, ''); // Solo números
 
                         // Saltar encabezados o filas vacías/inválidas
@@ -275,20 +311,24 @@
                             const fullText = `${greeting} ${contactName}, te saluda *${userName}* del equipo de *${leaderName}*`;
                             
                             // El encodeURIComponent transforma \n en %0A, y espacios en %20.
-                            const encodedMessage = encodeURIComponent(fullText);
+                            let encodedMessage = encodeURIComponent(fullText);
+                            
+                            // *** CORRECCIÓN CLAVE: Asegurar que los espacios sean %20, no + ***
+                            // Esto soluciona la incompatibilidad con WhatsApp de escritorio/web.
+                            encodedMessage = encodedMessage.replace(/\+/g, '%20'); 
                             
                             // Link final
                             const link = `${WA_API_BASE}${phone}?text=${encodedMessage}`;
 
                             // Renderizar fila
                             const tr = document.createElement('tr');
-                            tr.className = "hover:bg-gray-50";
+                            tr.className = "hover:bg-gray-50 transition";
                             tr.innerHTML = `
                                 <td class="p-3 font-medium text-gray-800">${rawName}</td>
                                 <td class="p-3 text-gray-500 max-w-xs text-xs font-mono">${greeting} ${contactName}, ...</td>
-                                <td class="p-3 text-right">
-                                    <a href="${link}" target="_blank" class="text-wa-green hover:underline font-bold text-sm mr-2">Abrir</a>
-                                    <button onclick="copyOneLink('${link}')" class="text-blue-500 hover:underline text-sm">Copiar</button>
+                                <td class="p-3 text-right space-x-2">
+                                    <a href="${link}" target="_blank" class="text-result-red hover:underline font-bold text-sm inline-flex items-center">Abrir</a>
+                                    <button onclick="copyOneLink('${link}')" class="text-gray-500 hover:text-synergy-dark underline text-sm font-medium">Copiar</button>
                                 </td>
                             `;
                             resultsBody.appendChild(tr);
@@ -312,7 +352,6 @@
         // Funciones de Copiado
         function copyOneLink(link) {
             navigator.clipboard.writeText(link).then(() => {
-                // Usamos un modal o un toast en lugar de alert()
                 showToast('Link copiado al portapapeles.', 'success');
             }).catch(() => {
                 showToast('Error al copiar el link.', 'error');
@@ -325,16 +364,16 @@
             
             let allLinks = "";
             rows.forEach(row => {
-                // El link está en el atributo 'href' del botón 'Abrir'
                 const link = row.querySelector('a').href;
                 allLinks += link + "\n";
             });
 
             navigator.clipboard.writeText(allLinks).then(() => {
+                const originalText = button.textContent;
                 button.textContent = '¡Copiados!';
                 showToast('Todos los links han sido copiados.', 'success');
                 setTimeout(() => {
-                    button.textContent = 'Copiar Todos los Links';
+                    button.textContent = originalText;
                 }, 2000);
             }).catch(() => {
                 showToast('Error al copiar todos los links.', 'error');
@@ -349,12 +388,13 @@
             if (!toastEl) {
                 toastEl = document.createElement('div');
                 toastEl.id = toastId;
-                toastEl.className = 'fixed bottom-4 right-4 p-4 rounded-lg shadow-xl text-white transition-opacity duration-300 opacity-0 z-50';
+                toastEl.className = 'fixed bottom-4 right-4 p-4 rounded-xl shadow-2xl text-white transition-opacity duration-300 opacity-0 z-50 max-w-xs w-full text-left';
                 document.body.appendChild(toastEl);
             }
 
-            toastEl.className = toastEl.className.replace(/bg-(red|green)-\d+/, ''); // Limpiar colores anteriores
-            toastEl.classList.add(type === 'success' ? 'bg-green-600' : 'bg-red-600');
+            // Usar result-red para errores y un gris oscuro para éxito (estética 1+1=3)
+            toastEl.className = toastEl.className.replace(/bg-(red|green)-\d+/g, ''); // Limpiar colores anteriores
+            toastEl.classList.add(type === 'success' ? 'bg-synergy-dark' : 'bg-result-red');
             toastEl.innerHTML = `<p class="font-semibold">${message}</p>`;
             
             // Mostrar y ocultar
