@@ -92,7 +92,7 @@
                 <p class="text-gray-500 mb-4">Pega las celdas de tu Excel/Sheets aquí.</p>
                 
                 <div class="bg-blue-50 p-3 rounded-md mb-3 text-sm text-blue-800 border border-blue-200">
-                    <strong>Importante:</strong> El sistema buscará el <strong>Nombre en la Columna 1</strong> y el <strong>Teléfono en la Columna 4</strong> (con código de país).
+                    <strong>Importante:</strong> El sistema buscará el <strong>Primer Nombre (Columna 1)</strong> y el <strong>Teléfono (Columna 4)</strong>.
                 </div>
 
                 <textarea id="sheetData" rows="8" class="w-full p-3 font-mono text-sm border rounded-lg focus:outline-none focus:border-wa-green border-gray-300 mb-2" placeholder="Cathy	cathy@mail.com	MX	573226603371 ..." oninput="checkValidity(this)"></textarea>
@@ -260,7 +260,8 @@
                     
                     // Validar que tenga suficientes columnas y que el teléfono parezca un número
                     if (cols.length > COL_PHONE) {
-                        const contactName = cols[COL_NAME].trim();
+                        const rawName = cols[COL_NAME].trim(); // Nombre completo de la columna
+                        let contactName = rawName.split(' ')[0]; // <--- SOLO TOMA EL PRIMER NOMBRE
                         let phone = cols[COL_PHONE].replace(/\D/g, ''); // Solo números
 
                         // Saltar encabezados o filas vacías/inválidas
@@ -283,7 +284,7 @@
                             const tr = document.createElement('tr');
                             tr.className = "hover:bg-gray-50";
                             tr.innerHTML = `
-                                <td class="p-3 font-medium text-gray-800">${contactName}</td>
+                                <td class="p-3 font-medium text-gray-800">${rawName}</td>
                                 <td class="p-3 text-gray-500 max-w-xs text-xs font-mono">${greeting} ${contactName}, ...</td>
                                 <td class="p-3 text-right">
                                     <a href="${link}" target="_blank" class="text-wa-green hover:underline font-bold text-sm mr-2">Abrir</a>
